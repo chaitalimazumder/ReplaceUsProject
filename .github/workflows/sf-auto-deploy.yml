@@ -1,0 +1,50 @@
+name: Sf Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Install Node.js (required for Salesforce CLI)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3️⃣ Install Salesforce CLI
+      - name: Install Salesforce CLI
+        run: |
+          npm install --global @salesforce/cli
+
+      # 4️⃣ Install jq (needed for JSON parsing)
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      # 5️⃣ Authenticate to Salesforce (JWT)
+      - name: Authenticate Salesforce Org
+        run: |
+          echo "${{ secrets.SF_PRIVATE_KEY }}" > server.key
+          sf org login jwt \
+            --client-id ${{ secrets.SF_CLIENT_ID }} \
+            --jwt-key-file server.key \
+            --username ${{ secrets.SF_USERNAME }} \
+            --instance-url ${{ secrets.SF_INSTANCE_URL }} \
+            --alias ciOrg
+
+      # 6️⃣ Run your automation script
+      - name: Run Auto Deploy Script
+        run: |
+          chmod +x scripts/auto_deploy.sh
+          ./scripts/auto_deploy.sh
