@@ -1,31 +1,39 @@
 #!/bin/bash
 set -e
 
-echo "=== Testing Auto File Creation + Deployment Script ==="
+echo "=== Auto File Creation + Deployment Script ==="
 
 # -----------------------------------------------
-# HARD-CODED SAMPLE RESPONSE
+# CONFIG
 # -----------------------------------------------
-hardcoded_response='
-{
-  "files": [
-    {
-      "path": "force-app/main/default/objects/Customer2__c/fields/TelePhone__c.field-meta.xml",
-      "content": "<CustomField xmlns=\"http://soap.sforce.com/2006/04/metadata\"><fullName>TelePhone__c</fullName><label>TelePhone</label><type>Phone</type></CustomField>"
-    }
-  ]
-}
-'
-
-echo "=== Parsing Hardcoded JSON ==="
-files=$(echo "$hardcoded_response" | jq -c '.files[]')
+PROMPT_JSON="metadata-output/prompt-response.json"
+ORG_ALIAS="ciOrg"
 
 # -----------------------------------------------
-# CREATE FILES + TRACK THEM
+# VALIDATION
+# -----------------------------------------------
+if [ ! -f "$PROMPT_JSON" ]; then
+  echo "Prompt response JSON not found at: $PROMPT_JSON"
+  exit 1
+fi
+
+if ! command -v jq &> /dev/null; then
+  echo "jq is required but not installed"
+  exit 1
+fi
+
+# -----------------------------------------------
+# PARSE JSON
+# -----------------------------------------------
+echo "=== Reading Prompt Template JSON ==="
+files=$(jq -c '.files[]' "$PROMPT_JSON")
+
+# -----------------------------------------------
+# CREATE FILES + TRACK DEPLOY DIRS
 # -----------------------------------------------
 echo "=== Creating Metadata Files ==="
 
-DEPLOY_PATHS=()
+DEPLOY_DIRS=()
 
 while IFS= read -r file; do
   path=$(echo "$file" | jq -r '.path')
@@ -35,19 +43,29 @@ while IFS= read -r file; do
   mkdir -p "$dir"
 
   echo "$content" > "$path"
-  DEPLOY_PATHS+=("$path")
+  echo "✔ Created: $path"
 
-  echo "Created: $path"
+  # Track parent folder (IMPORTANT for Salesforce)
+  DEPLOY_DIRS+=("$dir")
 done <<< "$files"
 
 # -----------------------------------------------
-# DEPLOY ONLY CREATED FILES
+# REMOVE DUPLICATE DIRS
 # -----------------------------------------------
-echo "=== Deploying ONLY newly created files ==="
+DEPLOY_DIRS=($(printf "%s\n" "${DEPLOY_DIRS[@]}" | sort -u))
 
-sf project deploy start \
-  --source-dir "${DEPLOY_PATHS[@]}" \
-  --target-org ciOrg \
-  --ignore-conflicts
+# -----------------------------------------------
+# DEPLOY ONLY GENERATED METADATA
+# -----------------------------------------------
+echo "=== Deploying ONLY Generated Metadata ==="
 
-echo "=== DONE: Only new files deployed ==="
+DEPLOY_CMD="sf project deploy start --target-org $ORG_ALIAS"
+
+for dir in "${DEPLOY_DIRS[@]}"; do
+  DEPLOY_CMD="$DEPLOY_CMD --source-dir $dir"
+done
+
+echo "Running: $DEPLOY_CMD"
+eval "$DEPLOY_CMD"
+
+echo "=== DONE: Deployment Successful ==="
