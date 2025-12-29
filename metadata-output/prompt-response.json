@@ -1,8 +1,13 @@
+
 {
   "files": [
     {
-      "path": "force-app/main/default/objects/Customer2__c/fields/Email__c.field-meta.xml",
-      "content": "<CustomField xmlns=\"http://soap.sforce.com/2006/04/metadata\"><fullName>Email__c</fullName><label>Email</label><type>Email</type></CustomField>"
+      "path": "force-app/main/default/objects/Retailer__c/Retailer__c.object-meta.xml",
+      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CustomObject xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <label>Retailer</label>\n    <pluralLabel>Retailers</pluralLabel>\n    <deploymentStatus>Deployed</deploymentStatus>\n    <sharingModel>ReadWrite</sharingModel>\n    <nameField>\n        <label>Retailer Name</label>\n        <type>Text</type>\n    </nameField>\n</CustomObject>"
+    },
+    {
+      "path": "force-app/main/default/objects/Retailer__c/fields/Phone__c.field-meta.xml",
+      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CustomField xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <fullName>Phone__c</fullName>\n    <label>Phone</label>\n    <type>Phone</type>\n</CustomField>"
     }
   ]
 }
