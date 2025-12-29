@@ -2,11 +2,11 @@
   "files": [
     {
       "path": "force-app/main/default/objects/Customer3__c/Customer3__c.object-meta.xml",
-      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CustomObject xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <label>Customer3</label>\n    <pluralLabel>Customer3s</pluralLabel>\n    <deploymentStatus>Deployed</deploymentStatus>\n    <sharingModel>ReadWrite</sharingModel>\n    <nameField>\n        <label>Customer3 Name</label>\n        <type>Text</type>\n    </nameField>\n</CustomObject>"
+      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CustomObject xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <label>Customer3</label>\n    <pluralLabel>Customer3s</pluralLabel>\n    <deploymentStatus>Deployed</deploymentStatus>\n    <sharingModel>ReadWrite</sharingModel>\n    <nameField>\n        <label>Customer3 Name</label>\n        <type>Text</type>\n    </nameField>\n</CustomObject>\n"
     },
     {
       "path": "force-app/main/default/objects/Customer3__c/fields/Phone__c.field-meta.xml",
-      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CustomField xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <fullName>Customer3__c.Phone__c</fullName>\n    <label>Phone</label>\n    <type>Phone</type>\n</CustomField>"
+      "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CustomField xmlns=\"http://soap.sforce.com/2006/04/metadata\">\n    <fullName>Phone__c</fullName>\n    <label>Phone</label>\n    <type>Phone</type>\n</CustomField>\n"
     }
   ]
 }
